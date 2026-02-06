@@ -4,11 +4,15 @@ import Navbar from "../Navbar/Navbar";
 import Typography from "@mui/material/Typography";
 import student_img from "../imgs/students_img.png";
 import Paper from "@mui/material/Paper";
+import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
 
 import SchoolIcon from "@mui/icons-material/School";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import Button from "@mui/material/Button";
+
+
 
 const Home = () => {
   return (
@@ -153,6 +157,12 @@ const Home = () => {
           </Paper>
         </Box>
       </Box>
+      <Divider  sx={{my:2}}/>
+      <Box sx={{display:"flex", justifyContent:"center", alignItems:"center", gap:1, width:"100%", p:2}}>
+        <Typography variant="h6" sx={{color:"text.primary"}}>Emergency Contact: <Link underline="hover" href="tel:+918142288033">+91 8142288033</Link> & </Typography>
+        <Link underline="hover" sx={{fontSize:"14px"}}>Privacy Policy</Link>
+      </Box>
+
     </Box>
   );
 };

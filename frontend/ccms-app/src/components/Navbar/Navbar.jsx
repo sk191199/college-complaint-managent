@@ -58,10 +58,10 @@ const Navbar = () => {
                 component="img"
                 src={logo}
                 alt="ccms-logo"
-                sx={{ width: 60, height: 60 }}
+                sx={{ width: 70, height: 70 }}
               />
 
-              <Typography variant="h6" sx={{ color: "primary.main" }}>
+              <Typography variant="h5" sx={{ color: "primary.main" }}>
                 College Complaints
               </Typography>
             </Box>

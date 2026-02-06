@@ -6,23 +6,21 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 // import routes
-const userRoutes = require("./routes/user.routes")
+const userRoutes = require("./routes/user.routes");
 
-
-
-const app = express()
-app.use(cors())
-app.use(bodyParser.json())
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
 // use routes
-app.use(userRoutes)
+app.use("/api/user", userRoutes);
 
-const port = process.env.PORT || 5005
+const Port = process.env.PORT || 5005;
 
 app.get("/", (req, res) => {
-    res.send("CCMS is Running")
+  res.send("CCMS is Running");
 })
 
-app.listen(port , () => {
-    console.log(`server is running on port ${port}`)
-})
+app.listen(Port, () => {
+  console.log(`server is running on port ${Port}`);
+});
