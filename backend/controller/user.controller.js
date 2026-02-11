@@ -2,6 +2,8 @@
 const bcrypt = require("bcrypt");
 const { connectToDatabase } = require("../config/db");
 const SALT_ROUNDS = 10;
+
+
 //create user
 const createUser = async (req, res) => {
   const { User } = await connectToDatabase();
@@ -35,6 +37,9 @@ const createUser = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+//exporting above functions using common js module. with object format
 module.exports = {
   createUser,
 };

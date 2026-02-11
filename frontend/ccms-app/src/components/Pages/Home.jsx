@@ -1,20 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Navbar from "../Navbar/Navbar";
 import Typography from "@mui/material/Typography";
 import student_img from "../imgs/students_img.png";
 import Paper from "@mui/material/Paper";
-import Divider from '@mui/material/Divider';
-import Link from '@mui/material/Link';
-
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import { useNavigate } from "react-router-dom";
 import SchoolIcon from "@mui/icons-material/School";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import Button from "@mui/material/Button";
 
-
-
 const Home = () => {
+  const [openLoader, setOpenLoader] = useState(false);
+  const Navigate = useNavigate();
+
+  const handleClickStudent = () => {
+    setOpenLoader(true);
+
+    setTimeout(() => {
+      Navigate("/student-login");
+    }, 300);
+  };
+
+  const handleClickAdmin = () => {
+    setOpenLoader(true);
+
+    setTimeout(() => {
+      Navigate("/admin-login");
+    }, 300);
+  };
   return (
     <Box>
       <Navbar />
@@ -90,9 +108,9 @@ const Home = () => {
               alignItems: "center",
               gap: 1.5,
               flexGrow: 1, // ⭐ equal height
-              backgroundColor:"background.default",
-              borderRadius:1,
-              border: "2px solid #ffffff"
+              backgroundColor: "background.default",
+              borderRadius: 1,
+              border: "2px solid #ffffff",
             }}
           >
             <Typography variant="h5" sx={{ color: "primary.main" }}>
@@ -113,6 +131,7 @@ const Home = () => {
               variant="contained"
               fullWidth
               sx={{ mt: "auto" }} // ⭐ push button to bottom
+              onClick={handleClickStudent}
             >
               File a Complaint
             </Button>
@@ -136,9 +155,9 @@ const Home = () => {
               alignItems: "center",
               gap: 1.5,
               flexGrow: 1, // ⭐ equal height
-              backgroundColor:"background.default",
-              borderRadius:1, 
-              border:"2px solid #ffffff"
+              backgroundColor: "background.default",
+              borderRadius: 1,
+              border: "2px solid #ffffff",
             }}
           >
             <Typography variant="h5">Admin & Staff Login</Typography>
@@ -151,18 +170,44 @@ const Home = () => {
               variant="contained"
               fullWidth
               sx={{ mt: "auto", backgroundColor: "text.primary" }} // ⭐ same bottom alignment
+              onClick={handleClickAdmin}
             >
               Login
             </Button>
           </Paper>
         </Box>
       </Box>
-      <Divider  sx={{my:2}}/>
-      <Box sx={{display:"flex", justifyContent:"center", alignItems:"center", gap:1, width:"100%", p:2}}>
-        <Typography variant="h6" sx={{color:"text.primary"}}>Emergency Contact: <Link underline="hover" href="tel:+918142288033">+91 8142288033</Link> & </Typography>
-        <Link underline="hover" sx={{fontSize:"14px"}}>Privacy Policy</Link>
+      <Divider sx={{ my: 2 }} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 1,
+          width: "100%",
+          p: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ color: "text.primary" }}>
+          Emergency Contact:{" "}
+          <Link underline="hover" href="tel:+918142288033">
+            +91 8142288033
+          </Link>{" "}
+          &{" "}
+        </Typography>
+        <Link underline="hover" sx={{ fontSize: "14px" }}>
+          Privacy Policy
+        </Link>
       </Box>
-
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 };

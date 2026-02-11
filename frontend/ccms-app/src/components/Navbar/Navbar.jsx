@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // MUI components
 import AppBar from "@mui/material/AppBar";
@@ -11,6 +12,8 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Icons
 import MenuIcon from "@mui/icons-material/Menu";
@@ -20,6 +23,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import logo from "../imgs/ccms-logo.png";
 
 const Navbar = () => {
+  const [openLoader, setOpenLoader] = useState(false);
+  const Navigate = useNavigate();
+
   // 👉 State to OPEN / CLOSE mobile menu
   const [open, setOpen] = useState(false);
 
@@ -31,6 +37,14 @@ const Navbar = () => {
   // 👉 Close Drawer
   const closeDrawer = () => {
     setOpen(false);
+  };
+
+  //login button clicked route transaction applied
+  const handleloginClick = () => {
+    setOpenLoader(true);
+    setTimeout(() => {
+      Navigate("/student-login")
+    }, 300);
   };
 
   return (
@@ -72,7 +86,7 @@ const Navbar = () => {
               <Button color="primary">About</Button>
               <Button color="primary">Contact</Button>
               <Button color="primary">FAQ</Button>
-              <Button variant="contained">Login</Button>
+              <Button variant="contained" onClick={handleloginClick}>Login</Button>
             </Box>
 
             {/* ===== MOBILE MENU ICON (☰) ===== */}
@@ -128,6 +142,7 @@ const Navbar = () => {
                 variant="contained"
                 fullWidth
                 sx={{ backgroundColor: "primary.main" }}
+                onClick={handleloginClick}
               >
                 Login
               </Button>
@@ -138,6 +153,15 @@ const Navbar = () => {
           </List>
         </Box>
       </Drawer>
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };
