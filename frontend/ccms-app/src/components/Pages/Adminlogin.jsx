@@ -8,6 +8,7 @@ import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../api/auth.api";
 
 import logo from "../imgs/ccms-logo.png";
 
@@ -40,56 +41,62 @@ const Adminlogin = () => {
     }));
   };
 
-  // 5️⃣ Login function
+  //login user api calling
   const handleLogin = async () => {
-    setErrors({ email: "", password: "" });
 
-    // validation
-    if (!formData.email) {
-      setErrors({ email: "Email is required" });
-      return;
-    }
+  // clear old errors
+  setErrors({ email: "", password: "" });
 
-    if (!formData.password) {
-      setErrors({ password: "Password is required" });
-      return;
-    }
+  // ✅ simple validation
+  if (!formData.email) {
+    setErrors({ email: "Email is required", password: "" });
+    return;
+  }
 
+  if (!formData.password) {
+    setErrors({ email: "", password: "Password is required" });
+    return;
+  }
+
+  try {
     setLoading(true);
 
-    // 🔹 SEND OBJECT TO BACKEND
-    const loginData = {
-      email: formData.email,
-      password: formData.password,
-    };
+    // 🔥 Call backend
+    const response = await loginUser(formData);
 
-    console.log("Sending to backend:", loginData);
+    console.log("Login success:", response.data);
 
-    // 🔹 Simulating API call
+    // If backend sends token
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
+
+    setSuccess(true);
+
     setTimeout(() => {
-      const dbEmail = "admin@gmail.com";
-      const dbPassword = "admin123";
+      navigate("/admin/dashboard");
+    }, 1500);
 
-      if (loginData.email !== dbEmail) {
-        setErrors({ email: "Invalid email" });
-        setLoading(false);
-        return;
-      }
+  } catch (error) {
 
-      if (loginData.password !== dbPassword) {
-        setErrors({ password: "Invalid password" });
-        setLoading(false);
-        return;
-      }
+    console.log("Login failed");
 
-      setLoading(false);
-      setSuccess(true);
+    if (error.response) {
+      setErrors({
+        email: error.response.data.message || "Invalid credentials",
+        password: ""
+      });
+    } else {
+      setErrors({
+        email: "Server error",
+        password: ""
+      });
+    }
 
-      setTimeout(() => {
-        navigate("/admin/dashboard");
-      }, 1500);
-    }, 2000);
-  };
+  }
+
+  setLoading(false);
+};
 
   return (
     <Box

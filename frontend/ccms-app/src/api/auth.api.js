@@ -9,3 +9,4 @@ export const signupUser = (data) => {
 export const loginUser = (data) => {
     return api.post("/user/login", data);
 }
+
