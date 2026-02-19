@@ -43,60 +43,56 @@ const Adminlogin = () => {
 
   //login user api calling
   const handleLogin = async () => {
+    // clear old errors
+    setErrors({ email: "", password: "" });
 
-  // clear old errors
-  setErrors({ email: "", password: "" });
-
-  // ✅ simple validation
-  if (!formData.email) {
-    setErrors({ email: "Email is required", password: "" });
-    return;
-  }
-
-  if (!formData.password) {
-    setErrors({ email: "", password: "Password is required" });
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    // 🔥 Call backend
-    const response = await loginUser(formData);
-
-    console.log("Login success:", response.data);
-
-    // If backend sends token
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
+    // ✅ simple validation
+    if (!formData.email) {
+      setErrors({ email: "Email is required", password: "" });
+      return;
     }
 
-    setSuccess(true);
-
-    setTimeout(() => {
-      navigate("/admin/dashboard");
-    }, 1500);
-
-  } catch (error) {
-
-    console.log("Login failed");
-
-    if (error.response) {
-      setErrors({
-        email: error.response.data.message || "Invalid credentials",
-        password: ""
-      });
-    } else {
-      setErrors({
-        email: "Server error",
-        password: ""
-      });
+    if (!formData.password) {
+      setErrors({ email: "", password: "Password is required" });
+      return;
     }
 
-  }
+    try {
+      setLoading(true);
 
-  setLoading(false);
-};
+      // 🔥 Call backend
+      const response = await loginUser(formData);
+
+      console.log("Login success:", response.data);
+
+      // If backend sends token
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 1500);
+    } catch (error) {
+      console.log("Login failed");
+
+      if (error.response) {
+        setErrors({
+          email: error.response.data.message || "Invalid credentials",
+          password: "",
+        });
+      } else {
+        setErrors({
+          email: "Server error",
+          password: "",
+        });
+      }
+    }
+
+    setLoading(false);
+  };
 
   return (
     <Box
@@ -162,7 +158,7 @@ const Adminlogin = () => {
             <Button
               fullWidth
               variant="contained"
-              sx={{ mt: 2, height: 45, backgroundColor:"text.primary" }}
+              sx={{ mt: 2, height: 45, backgroundColor: "text.primary" }}
               onClick={handleLogin}
               disabled={loading}
             >
@@ -174,7 +170,9 @@ const Adminlogin = () => {
             </Button>
 
             <Typography mt={2} textAlign="right">
-              <Link underline="hover" sx={{color:"red"}}>Forgot Password?</Link>
+              <Link underline="hover" sx={{ color: "red" }}>
+                Forgot Password?
+              </Link>
             </Typography>
           </Paper>
         )}

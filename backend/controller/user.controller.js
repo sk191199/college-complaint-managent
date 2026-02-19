@@ -91,7 +91,7 @@ const getProfile = async (req, res) => {
     console.log(req.user)
     const userId = req.user.id;
 
-    const userData = await User.findByPk(userId, {attributes : ["id", "email", "name", "role"]})
+    const userData = await User.findByPk(userId, {attributes : ["id", "email", "name", "role", "gender", "phone"]})
 
     return res.status(200).json({
       message: "Profile fectched successfully",
