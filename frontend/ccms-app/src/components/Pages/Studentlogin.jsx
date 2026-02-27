@@ -66,29 +66,54 @@ const Studentlogin = () => {
     console.log("Sending to backend:", loginData);
 
     // 🔹 Simulating API call
-    setTimeout(() => {
-      const dbEmail = "subbu@gmail.com";
-      const dbPassword = "subbu123";
+    try {
+      setLoading(true);
 
-      if (loginData.email !== dbEmail) {
-        setErrors({ email: "Invalid email" });
-        setLoading(false);
-        return;
-      }
+      const res = await loginUser(formData);
 
-      if (loginData.password !== dbPassword) {
-        setErrors({ password: "Invalid password" });
-        setLoading(false);
-        return;
-      }
+      //store token in localstorage
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      setLoading(false);
       setSuccess(true);
 
       setTimeout(() => {
-        navigate("/student/dashboard");
+        navigate("/dashboard");
       }, 1500);
-    }, 2000);
+    } catch (error) {
+      // Get error message and field from backend response
+      const errorMessage = error.response?.data?.message || "An error occurred";
+      const errorField = error.response?.data?.field;
+
+      // Set error only on the specific field that failed
+      if (errorField === "email") {
+        setErrors({ email: errorMessage, password: "" });
+      } else if (errorField === "password") {
+        setErrors({ email: "", password: errorMessage });
+      } else {
+        // Generic error - show on both fields
+        setErrors({ email: errorMessage, password: errorMessage });
+      }
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // handleClickRegister
+  const handleClickRegister = () => {
+    setLoading(true);
+    setTimeout(() => {
+      navigate("/signup");
+    }, 1500);
+  };
+
+  // handleClickForgot
+  const handleClickForgot = () => {
+    setLoading(true);
+    setTimeout(() => {
+      navigate("/Change-password");
+    });
   };
 
   return (
@@ -149,11 +174,35 @@ const Studentlogin = () => {
                 "Login"
               )}
             </Button>
-            <Typography mt={2} textAlign="right">
-              <Link underline="hover" sx={{ color: "red" }}>
-                Forgot Password?
-              </Link>
-            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mt: "1rem",
+              }}
+            >
+              <Typography>
+                <Link
+                  underline="hover"
+                  sx={{ color: "red" }}
+                  component="button"
+                  onClick={handleClickRegister}
+                >
+                  Register
+                </Link>
+              </Typography>
+
+              <Typography>
+                <Link
+                  underline="hover"
+                  sx={{ color: "red" }}
+                  component="button"
+                  onClick={handleClickForgot}
+                >
+                  Forgot Password?
+                </Link>
+              </Typography>
+            </Box>
           </Paper>
         )}
       </Box>

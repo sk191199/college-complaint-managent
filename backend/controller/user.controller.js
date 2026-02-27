@@ -54,12 +54,14 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid Emial" });
+      return res.status(400).json({ message: "Invalid Email", field: "email" });
     }
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res
+        .status(400)
+        .json({ message: "Invalid Password", field: "password" });
     }
 
     //create Token
@@ -83,40 +85,94 @@ const loginUser = async (req, res) => {
   }
 };
 
-
 //get profile api
 const getProfile = async (req, res) => {
   const { User } = await connectToDatabase();
-  try{
-    console.log(req.user)
+  try {
+    console.log(req.user);
     const userId = req.user.id;
 
-    const userData = await User.findByPk(userId, {attributes : ["id", "email", "name", "role", "gender", "phone"]})
+    const userData = await User.findByPk(userId, {
+      attributes: ["id", "email", "name", "role", "gender", "phone"],
+    });
 
     return res.status(200).json({
       message: "Profile fectched successfully",
-      userData : userData ,
-    })
-
-  }catch (error){
-    console.log("Error Message", error )
-    return res.status(500).json({ message: "Internal Server Error"})
+      userData: userData,
+    });
+  } catch (error) {
+    console.log("Error Message", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
+};
 
-}
+// verify email
+const verifyEmail = async (req, res) => {
+  const { User } = await connectToDatabase();
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res
+        .status(400)
+        .json({ message: "Email required", field: "email" });
+    }
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Email Not Found", field: "email" });
+    }
+    res.status(200).json({ message: "Email Verified" });
+  } catch (error) {
+    console.log("Error Verifying Email", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
+//change password
+const changePassword = async (req, res) => {
+  const { User } = await connectToDatabase();
+  try {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Email and newPassword are required" });
+    }
+    // find user by email
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Email Not Found", field: "email" });
+    }
 
+    //compare new password with old password
+    const isSamepassword = await bcrypt.compare(newPassword, user.password);
+    // if newpassword is same as old password
+    if (isSamepassword) {
+      return res
+        .status(400)
+        .json({
+          message: "New password cannot be same as old password",
+          field: "newPassword",
+        });
+    }
 
-
-
-
-
-
-
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await user.update({ password: hashedPassword });
+    return res.status(200).json({ message: "Passowrd changed successfully" });
+  } catch (error) {
+    console.log("Error Change Password", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 //exporting above functions using common js module. with object format
 module.exports = {
   createUser,
   loginUser,
   getProfile,
+  verifyEmail,
+  changePassword,
 };

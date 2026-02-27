@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import PageLoader from "../PageLoader/PageLoader";
+import Changepassword from "../Pages/Changepassword";
 
 // these are normal imports but now we use lazy imports.
 // import Home from "../Pages/Home";
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       <Route path="/admin-login" element={<Adminlogin />} />
       <Route path="/student-login" element={<Studentlogin />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="change-password" element={<Changepassword/>}/>
     </Routes>
     </Suspense>
   );
