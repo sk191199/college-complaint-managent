@@ -18,5 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       engine: "InnoDB",
     },
   );
+  // associations
+  Department.associate = (models) => {
+    Department.hasMany(models.Complaint, {
+      foreignKey: "department_id",
+      as: "complaints",
+    });
+  };
   return Department;
 };

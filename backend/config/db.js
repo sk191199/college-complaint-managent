@@ -4,6 +4,8 @@ dotenv.config()
 
 //import models
 const UserModel = require("../model/user.model");
+const DepartmentModel = require("../model/department.model");
+const ComplaintModel = require("../model/complaints.model");
 
 // you can replace sequelize with any other names like database connection its just name.
 const sequelize = new Sequelize(
@@ -20,7 +22,16 @@ const sequelize = new Sequelize(
 //define models means tables
 const models = {
     User : UserModel(sequelize, Sequelize),
+    Department: DepartmentModel(sequelize, Sequelize),
+    Complaint: ComplaintModel(sequelize, Sequelize),
 }
+
+// Set up associations
+Object.keys(models).forEach(modelName => {
+    if (models[modelName].associate) {
+        models[modelName].associate(models);
+    }
+});
 
 const connection = {}
 
