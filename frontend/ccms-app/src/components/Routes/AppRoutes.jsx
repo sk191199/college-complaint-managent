@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import PageLoader from "../PageLoader/PageLoader";
 import Changepassword from "../Pages/Changepassword";
+import AdminDashboard from "../Adminpanel/AdminDashboard";
+import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 // these are normal imports but now we use lazy imports.
 // import Home from "../Pages/Home";
@@ -11,21 +13,28 @@ import Changepassword from "../Pages/Changepassword";
 
 //lazy imports
 const Home = lazy(() => import("../Pages/Home"));
-const Adminlogin = lazy(()=> import("../Pages/Adminlogin"));
-const Studentlogin = lazy(()=> import("../Pages/Studentlogin"));
-const Signup = lazy(()=> import("../Pages/Signup"));
-
+const Adminlogin = lazy(() => import("../Pages/Adminlogin"));
+const Studentlogin = lazy(() => import("../Pages/Studentlogin"));
+const Signup = lazy(() => import("../Pages/Signup"));
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<PageLoader/>}>
+    <Suspense fallback={<PageLoader />}>
       <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/admin-login" element={<Adminlogin />} />
-      <Route path="/student-login" element={<Studentlogin />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="change-password" element={<Changepassword/>}/>
-    </Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/admin-login" element={<Adminlogin />} />
+        <Route path="/student-login" element={<Studentlogin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="change-password" element={<Changepassword />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </Suspense>
   );
 };

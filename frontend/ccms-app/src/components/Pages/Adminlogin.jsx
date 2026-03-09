@@ -65,9 +65,17 @@ const Adminlogin = () => {
 
       console.log("Login success:", response.data);
 
+      // // Check if user is admin
+      // if (response.data.user.role !== "admin") {
+      //   setErrors({ email: "You are not authorized as admin", password: "" });
+      //   setLoading(false);
+      //   return;
+      // }
+
       // If backend sends token
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
       }
 
       setSuccess(true);
@@ -94,6 +102,13 @@ const Adminlogin = () => {
     setLoading(false);
   };
 
+  // handleClickForgot
+  const handleClickForgot = () => {
+    setLoading(true);
+    setTimeout(() => {
+      navigate("/Change-password");
+    });
+  };
   return (
     <Box
       sx={{
@@ -170,7 +185,7 @@ const Adminlogin = () => {
             </Button>
 
             <Typography mt={2} textAlign="right">
-              <Link underline="hover" sx={{ color: "red" }}>
+              <Link underline="hover" sx={{ color: "red" }} component="button" onClick={handleClickForgot}>
                 Forgot Password?
               </Link>
             </Typography>

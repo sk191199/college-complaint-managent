@@ -71,6 +71,13 @@ const Studentlogin = () => {
 
       const res = await loginUser(formData);
 
+      // // Check if user is student
+      // if (res.data.user.role !== "student") {
+      //   setErrors({ email: "You are not authorized as student", password: "" });
+      //   setLoading(false);
+      //   return;
+      // }
+
       //store token in localstorage
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
