@@ -4,6 +4,8 @@ import PageLoader from "../PageLoader/PageLoader";
 import Changepassword from "../Pages/Changepassword";
 import AdminDashboard from "../Adminpanel/AdminDashboard";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
+import PublicRoute from "../PublicRoute/PublicRoute";
+import AdminLayout from "../Adminpanel/AdminLayout";
 
 // these are normal imports but now we use lazy imports.
 // import Home from "../Pages/Home";
@@ -21,19 +23,52 @@ const AppRoutes = () => {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/admin-login" element={<Adminlogin />} />
-        <Route path="/student-login" element={<Studentlogin />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="change-password" element={<Changepassword />} />
         <Route
-          path="/admin/dashboard"
+          path="/"
           element={
-            <ProtectedRoute role="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
+            <PublicRoute>
+              <Home />
+            </PublicRoute>
           }
         />
+        <Route
+          path="/admin-login"
+          element={
+            <PublicRoute>
+              <Adminlogin />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/student-login"
+          element={
+            <PublicRoute>
+              <Studentlogin />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
+        <Route path="change-password" element={<Changepassword />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="complaints" element={<AdminDashboard />} />
+          <Route path="departments" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminDashboard />} />
+        </Route>
       </Routes>
     </Suspense>
   );
