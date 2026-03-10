@@ -88,7 +88,13 @@ const AdminLayout = () => {
           ))}
 
           <Button
-            sx={{ bgcolor: "#9227a7", color: "#fff" }}
+            sx={{
+              bgcolor: "#9227a7",
+              color: "#fff",
+              "&:hover": {
+                bgcolor: "#a931be",
+              },
+            }}
             onClick={() => setOpenLogoutDialog(true)}
           >
             Logout
@@ -135,16 +141,29 @@ const AdminLayout = () => {
               onClick={() => navigate("/admin/dashboard")}
             />
 
-            <BottomNavigationAction label="Complaints" icon={<ReportIcon />} />
+            <BottomNavigationAction
+              label="Complaints"
+              icon={<ReportIcon />}
+              onClick={() => navigate("/admin/complaints")}
+            />
 
             <BottomNavigationAction
               label="Departments"
               icon={<ApartmentIcon />}
+              onClick={() => navigate("/admin/departments")}
             />
 
-            <BottomNavigationAction label="Users" icon={<PeopleIcon />} />
+            <BottomNavigationAction
+              label="Users"
+              icon={<PeopleIcon />}
+              onClick={() => navigate("/admin/users")}
+            />
 
-            <BottomNavigationAction label="Logout" icon={<LogoutIcon />} onClick={() => setOpenLogoutDialog(true)} />
+            <BottomNavigationAction
+              label="Logout"
+              icon={<LogoutIcon />}
+              onClick={() => setOpenLogoutDialog(true)}
+            />
           </BottomNavigation>
         </Box>
         {/* LOGOUT CONFIRMATION DIALOG */}

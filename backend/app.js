@@ -7,6 +7,7 @@ dotenv.config();
 
 // import routes
 const userRoutes = require("./routes/user.routes");
+const DepartmentRoutes = require("./routes/department.routes");
 
 const app = express();
 app.use(cors());
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 
 // use routes
 app.use("/api/user", userRoutes);
+app.use("/api/user", DepartmentRoutes)
 
 const Port = process.env.PORT || 5005;
 

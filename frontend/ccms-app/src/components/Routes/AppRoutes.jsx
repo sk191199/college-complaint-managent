@@ -6,6 +6,9 @@ import AdminDashboard from "../Adminpanel/AdminDashboard";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import PublicRoute from "../PublicRoute/PublicRoute";
 import AdminLayout from "../Adminpanel/AdminLayout";
+import Departments from "../Adminpanel/Departments";
+import Complaints from "../Adminpanel/Complaints";
+import Users from "../Adminpanel/Users";
 
 // these are normal imports but now we use lazy imports.
 // import Home from "../Pages/Home";
@@ -65,9 +68,9 @@ const AppRoutes = () => {
           }
         >
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="complaints" element={<AdminDashboard />} />
-          <Route path="departments" element={<AdminDashboard />} />
-          <Route path="users" element={<AdminDashboard />} />
+          <Route path="complaints" element={<Complaints/>} />
+          <Route path="departments" element={<Departments/>} />
+          <Route path="users" element={<Users/>} />
         </Route>
       </Routes>
     </Suspense>

@@ -6,7 +6,9 @@ const theme = createTheme({
     background: {
       default: '#F1F5F9', // Ice Blue
       paper: '#FFFFFF',   // White Cards
-      btns :"#295fa6"
+      btns :"#295fa6",
+      adminbg : "#9227a7",
+      adminbg2 : "#a931be"
     },
     text: {
       primary: '#1E293B',
