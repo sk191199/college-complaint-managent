@@ -1,11 +1,11 @@
-const express = require("express")
+const express = require("express");
 
 const routes = express.Router();
 
-const { addDepartment} = require("../controller/department.controller")
-const { verifyToken } = require("../middleware/auth.middleware")
+const { addDepartment, getAllDepartments } = require("../controller/department.controller");
+const { verifyToken } = require("../middleware/auth.middleware");
 
-routes.post("/addDepartment",  addDepartment)
+routes.post("/addDepartment", verifyToken, addDepartment);
+routes.get("/getAllDepartments", verifyToken, getAllDepartments)
 
-
-module.exports = routes
+module.exports = routes;

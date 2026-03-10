@@ -37,7 +37,22 @@ const addDepartment = async (req, res) => {
   }
 };
 
+//get all departments
+const getAllDepartments = async (req, res) => {
+  try {
+    const { Department } = await connectToDatabase();
+
+    const departments = await Department.findAll();
+    return res
+      .status(200)
+      .json({ message: "Departments fetched successfully", data: departments });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
-    addDepartment, 
-}
+  addDepartment,
+  getAllDepartments,
+};
