@@ -52,7 +52,27 @@ const getAllDepartments = async (req, res) => {
   }
 };
 
+//delete department
+const deleteDepartment = async (req, res) => {
+  try {
+    const { Department } = await connectToDatabase();
+    const { id } = req.params;
+
+    const department = await Department.findByPk(id);
+
+    if (!department) {
+      return res.status(404).json({ message: "Department Not Found" });
+    }
+    await department.destroy();
+    return res.status(200).json({ message: "Deleted Successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addDepartment,
   getAllDepartments,
+  deleteDepartment
 };

@@ -29,3 +29,8 @@ export const addDepartment = (data) => {
 export const getAllDepartments = () => {
     return api.get("/user/getAllDepartments")
 }
+
+//delete department
+export const deleteDepartment = (id) => {
+    return api.delete(`/user/deleteDepartment/${id}`);
+}

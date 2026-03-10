@@ -12,26 +12,35 @@ import {
   IconButton,
   Paper,
   TableContainer,
+  Snackbar,
+  
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { addDepartment, getAllDepartments } from "../../api/auth.api";
+import {
+  addDepartment,
+  getAllDepartments,
+  deleteDepartment,
+} from "../../api/auth.api";
 
 const Departments = () => {
   const [DepartmentName, setDepartmentName] = useState("");
   const [Departments, setDepartments] = useState([]);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
+  // fetching departments
+  const fetchDepartments = async () => {
+    try {
+      const response = await getAllDepartments();
+      setDepartments(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await getAllDepartments();
-        setDepartments(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchDepartments();
   }, []);
 
@@ -52,6 +61,8 @@ const Departments = () => {
     try {
       const respone = await addDepartment({ departmentName: DepartmentName });
       console.log("Department", respone.data);
+      //refresh
+      fetchDepartments();
     } catch (error) {
       console.log(error);
       setError(error.response?.data?.message || "something went wrong");
@@ -65,10 +76,25 @@ const Departments = () => {
   };
 
   // Delete button click
-  const handleDelete = (dept) => {
-    console.log("Delete Department:", dept);
+  const handleDelete = async (dept) => {
+    try {
+      await deleteDepartment(dept.id);
+      setOpen(true);
+
+      //refresh departments
+      fetchDepartments();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   return (
     <Box>
@@ -102,7 +128,7 @@ const Departments = () => {
           Add
         </Button>
       </Box>
-      
+
       {/* Department Table */}
       <Box mt={4}>
         <Typography variant="h6" mb={2}>
@@ -157,6 +183,25 @@ const Departments = () => {
           </Table>
         </TableContainer>
       </Box>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open}
+        onClose={handleClose}
+        message="Department deleted successfully"
+        autoHideDuration={3000}
+        severity="success"
+      >
+        <MuiAlert
+          onClose={handleClose}
+          severity="success"
+          sx={{
+            backgroundColor: "#4caf50",
+            color: "#fff",
+          }}
+        >
+          Department deleted successfully
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
