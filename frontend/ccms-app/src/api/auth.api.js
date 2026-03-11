@@ -34,3 +34,8 @@ export const getAllDepartments = () => {
 export const deleteDepartment = (id) => {
     return api.delete(`/user/deleteDepartment/${id}`);
 }
+
+//update department
+export const updateDepartment = (id, data) => {
+    return api.put(`/user/updateDepartment/${id}`, data)
+}

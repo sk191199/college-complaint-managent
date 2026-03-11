@@ -71,8 +71,37 @@ const deleteDepartment = async (req, res) => {
   }
 };
 
+// update Department
+const updateDepartment = async (req, res) => {
+  try {
+    const { Department } = await connectToDatabase();
+    const { id } = req.params;
+    const { departmentName } = req.body;
+
+    const department = await Department.findByPk(id);
+
+    if (!department) {
+      return res.status(404).json({ message: "Department Not Found" });
+    }
+
+    await Department.update(
+      {
+        department_name: departmentName,
+      },
+      {
+        where: { id: id },
+      },
+    );
+    return res.status(200).json({ message: "Department Update Successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   addDepartment,
   getAllDepartments,
-  deleteDepartment
+  deleteDepartment,
+  updateDepartment,
 };

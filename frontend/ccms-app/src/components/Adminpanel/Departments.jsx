@@ -18,10 +18,12 @@ import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+//import api functions
 import {
   addDepartment,
   getAllDepartments,
   deleteDepartment,
+  updateDepartment,
 } from "../../api/auth.api";
 
 const Departments = () => {
@@ -30,6 +32,8 @@ const Departments = () => {
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [snackbarMsg, setSnackMsg] = useState("");
+  //state for edit it
+  const [editId, setEditId] = useState(null);
 
   // fetching departments
   const fetchDepartments = async () => {
@@ -40,6 +44,7 @@ const Departments = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchDepartments();
   }, []);
@@ -50,6 +55,7 @@ const Departments = () => {
     setDepartmentName(e.target.value);
   };
 
+  // ===>> ADD / UPDATE button function
   const handleClickAdd = async () => {
     setError("");
 
@@ -59,27 +65,36 @@ const Departments = () => {
     }
 
     try {
-      const respone = await addDepartment({ departmentName: DepartmentName });
-      console.log("Department", respone.data);
+      if (editId) {
+        await updateDepartment(editId, {
+          departmentName: DepartmentName,
+        });
+        //for snackbar
+        setSnackMsg("Department Updated Successfully");
+        setOpen(true);
+      } else {
+        await addDepartment({ departmentName: DepartmentName });
+        setSnackMsg("Department Added Successfully!");
+        setOpen(true);
+      }
+
       //refresh
       fetchDepartments();
 
-      setSnackMsg("Department Added Successfully!");
-      setOpen(true);
-
+      //reset feilds
       setDepartmentName("");
-      
+      setEditId(null);
+
     } catch (error) {
       console.log(error);
       setError(error.response?.data?.message || "something went wrong");
     }
-    
-    
   };
 
   // Edit button click
   const handleEdit = (dept) => {
-    console.log("Edit Department:", dept);
+    setDepartmentName(dept.department_name);
+    setEditId(dept.id);
   };
 
   // Delete button click
@@ -133,7 +148,7 @@ const Departments = () => {
           }}
           onClick={handleClickAdd}
         >
-          Add
+          {editId ? "Update" : "Add"}
         </Button>
       </Box>
 
