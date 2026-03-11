@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Avatar,
-  IconButton,
   BottomNavigation,
   BottomNavigationAction,
   Button,
@@ -103,7 +102,14 @@ const AdminLayout = () => {
       </Box>
 
       {/* MAIN CONTENT */}
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
         {/* MOBILE TOP BAR */}
         <Box
           sx={{
@@ -123,7 +129,29 @@ const AdminLayout = () => {
         </Box>
 
         {/* PAGE CONTENT */}
-        <Box sx={{ flex: 1, p: 2 }}>
+        <Box
+          sx={{
+            flex: 1,
+            p: 2,
+            overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "5px",
+            },
+
+            "&::-webkit-scrollbar-track": {
+              background: "#f1f1f1",
+            },
+
+            "&::-webkit-scrollbar-thumb": {
+              background: "#a931be",
+              borderRadius: "10px",
+            },
+
+            "&::-webkit-scrollbar-thumb:hover": {
+              background: "#9227a7",
+            },
+          }}
+        >
           {" "}
           <Outlet />{" "}
         </Box>

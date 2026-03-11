@@ -13,7 +13,6 @@ import {
   Paper,
   TableContainer,
   Snackbar,
-  
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import EditIcon from "@mui/icons-material/Edit";
@@ -30,7 +29,7 @@ const Departments = () => {
   const [Departments, setDepartments] = useState([]);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
-  const [snacbarMsg, setSnackMsg] = useState("")
+  const [snackbarMsg, setSnackMsg] = useState("");
 
   // fetching departments
   const fetchDepartments = async () => {
@@ -64,13 +63,18 @@ const Departments = () => {
       console.log("Department", respone.data);
       //refresh
       fetchDepartments();
+
+      setSnackMsg("Department Added Successfully!");
+      setOpen(true);
+
+      setDepartmentName("");
+      
     } catch (error) {
       console.log(error);
       setError(error.response?.data?.message || "something went wrong");
     }
-    setOpen(true)
-    setSnackMsg("Department Added Successfully!")
-    setDepartmentName("");
+    
+    
   };
 
   // Edit button click
@@ -83,7 +87,7 @@ const Departments = () => {
     try {
       await deleteDepartment(dept.id);
       setOpen(true);
-      setSnackMsg("Department deleted successfully")
+      setSnackMsg("Department deleted successfully");
 
       //refresh departments
       fetchDepartments();
@@ -140,7 +144,7 @@ const Departments = () => {
         </Typography>
 
         <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
-          <Table>
+          <Table stickyHeader>
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                 <TableCell>S.No</TableCell>
@@ -203,7 +207,7 @@ const Departments = () => {
             color: "#fff",
           }}
         >
-          {snacbarMsg}
+          {snackbarMsg}
         </MuiAlert>
       </Snackbar>
     </Box>
