@@ -23,4 +23,18 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
+
+//response intercept checking
+api.interceptors.response.use(
+  (response) => response, 
+  (error) => {
+    if (error.response && error.response.status === 401){
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+
+      window.location.replace("/  ")
+    }
+    return Promise.reject(error);
+  }
+);
 export default api;

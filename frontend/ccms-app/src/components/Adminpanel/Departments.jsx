@@ -30,6 +30,7 @@ const Departments = () => {
   const [Departments, setDepartments] = useState([]);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const [snacbarMsg, setSnackMsg] = useState("")
 
   // fetching departments
   const fetchDepartments = async () => {
@@ -67,6 +68,8 @@ const Departments = () => {
       console.log(error);
       setError(error.response?.data?.message || "something went wrong");
     }
+    setOpen(true)
+    setSnackMsg("Department Added Successfully!")
     setDepartmentName("");
   };
 
@@ -80,6 +83,7 @@ const Departments = () => {
     try {
       await deleteDepartment(dept.id);
       setOpen(true);
+      setSnackMsg("Department deleted successfully")
 
       //refresh departments
       fetchDepartments();
@@ -135,7 +139,7 @@ const Departments = () => {
           Departments List
         </Typography>
 
-        <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
+        <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
@@ -184,10 +188,10 @@ const Departments = () => {
         </TableContainer>
       </Box>
       <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={open}
         onClose={handleClose}
-        message="Department deleted successfully"
+        message=""
         autoHideDuration={3000}
         severity="success"
       >
@@ -199,7 +203,7 @@ const Departments = () => {
             color: "#fff",
           }}
         >
-          Department deleted successfully
+          {snacbarMsg}
         </MuiAlert>
       </Snackbar>
     </Box>

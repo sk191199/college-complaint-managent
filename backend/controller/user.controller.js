@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { connectToDatabase } = require("../config/db");
-const { where } = require("sequelize");
+
 const SALT_ROUNDS = 10;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
