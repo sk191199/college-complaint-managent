@@ -85,7 +85,7 @@ const Studentlogin = () => {
       setSuccess(true);
 
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("student/dashboard");
       }, 1500);
     } catch (error) {
       // Get error message and field from backend response

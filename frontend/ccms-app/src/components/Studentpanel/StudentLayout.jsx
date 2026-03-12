@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import {
   Box,
   Typography,
@@ -14,84 +16,85 @@ import {
   DialogActions,
 } from "@mui/material";
 
-import DashboardIcon from "@mui/icons-material/Dashboard";
+//icons
+import HomeIcon from "@mui/icons-material/Home";
 import ReportIcon from "@mui/icons-material/Report";
-import ApartmentIcon from "@mui/icons-material/Apartment";
-import PeopleIcon from "@mui/icons-material/People";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-import { useNavigate } from "react-router-dom";
-
-const AdminLayout = () => {
+const StudentLayout = () => {
   const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
 
+  // get user data from localstorage
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // menu Items
   const menuItems = [
-    { name: "Dashboard", path: "/admin/dashboard" },
-    { name: "Complaints", path: "/admin/complaints" },
-    { name: "Departments", path: "/admin/departments" },
-    { name: "User Management", path: "/admin/users" },
+    { name: "Dashboard", path: "/student/dashboard" },
+    { name: "My Complaints", path: "/student/complaints" },
   ];
 
+  //logout Function
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
 
-    navigate("/admin-login");
+    navigate("/student-login");
   };
-
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
-      {/* DESKTOP SIDEBAR */}
+      {/* desktop sidebar */}
       <Box
         sx={{
           width: 240,
-          bgcolor: "#5d0367",
-          display: { xs: "none", md: "flex" },
-          flexDirection: "column",
-          borderRight: "1px solid #a931be",
-          p: 2,
+          bgcolor: "#0b045c",
           color: "#fff",
+          flexDirection: "column",
+          p: 2,
+          display: {
+            xs: "none",
+            md: "flex",
+          },
         }}
       >
-        {/* Profile */}
+        {/* PROFILE */}
         <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
           <Avatar sx={{ mr: 1 }} />
-          <Typography fontWeight={600}>Welcome, {user?.name || "Admin"}</Typography>
+          <Typography fontWeight={600}>
+            {" "}
+            Welcome, {user?.name || "Student"} 👋
+          </Typography>
         </Box>
 
-        {/* Menu */}
+        {/* menu items */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {menuItems.map((item) => (
+          {menuItems.map((menu) => (
             <Button
-              key={item.name}
+              key={menu.name}
               variant="contained"
-              onClick={() => navigate(item.path)}
+              onClick={() => navigate(menu.path)}
               sx={{
                 justifyContent: "flex-start",
-                bgcolor: "#a931be",
+                bgcolor: "#6d5edb",
                 borderRadius: "12px",
                 p: 1.2,
                 color: "#fff",
                 textTransform: "none",
                 "&:hover": {
-                  bgcolor: "#9227a7",
+                  bgcolor: "#fcba03",
                 },
               }}
             >
-              {item.name}
+              {menu.name}
             </Button>
           ))}
-
           <Button
             sx={{
-              bgcolor: "#9227a7",
+              bgcolor: "#6d5edb",
               color: "#fff",
               "&:hover": {
-                bgcolor: "#a931be",
+                bgcolor: "#fcba03",
               },
             }}
             onClick={() => setOpenLogoutDialog(true)}
@@ -123,7 +126,7 @@ const AdminLayout = () => {
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Avatar sx={{ mr: 1 }} />
             <Typography fontWeight={600}>
-              Welcome, {user?.name || "Admin"} 👋
+              Welcome, {user?.name || "Student"} 👋
             </Typography>
           </Box>
         </Box>
@@ -157,36 +160,18 @@ const AdminLayout = () => {
         </Box>
 
         {/* MOBILE BOTTOM NAVBAR */}
-        <Box
-          sx={{
-            display: { xs: "block", md: "none" },
-          }}
-        >
+        <Box sx={{ display: { xs: "block", md: "none" } }}>
           <BottomNavigation showLabels>
             <BottomNavigationAction
               label="Home"
-              icon={<DashboardIcon />}
-              onClick={() => navigate("/admin/dashboard")}
+              icon={<HomeIcon />}
+              onClick={() => navigate("/student/dashboard")}
             />
-
             <BottomNavigationAction
-              label="Complaints"
+              label="My Complaints"
               icon={<ReportIcon />}
-              onClick={() => navigate("/admin/complaints")}
+              onClick={() => navigate("/student/complaints")}
             />
-
-            <BottomNavigationAction
-              label="Departments"
-              icon={<ApartmentIcon />}
-              onClick={() => navigate("/admin/departments")}
-            />
-
-            <BottomNavigationAction
-              label="Users"
-              icon={<PeopleIcon />}
-              onClick={() => navigate("/admin/users")}
-            />
-
             <BottomNavigationAction
               label="Logout"
               icon={<LogoutIcon />}
@@ -200,16 +185,11 @@ const AdminLayout = () => {
           onClose={() => setOpenLogoutDialog(false)}
         >
           <DialogTitle>Confirm Logout</DialogTitle>
-
           <DialogContent>
-            <DialogContentText>
-              Are you sure you want to logout?
-            </DialogContentText>
+            <DialogContentText>Are you sure you want to logout?</DialogContentText>
           </DialogContent>
-
           <DialogActions>
             <Button onClick={() => setOpenLogoutDialog(false)}>Cancel</Button>
-
             <Button color="error" onClick={handleLogout}>
               Logout
             </Button>
@@ -220,4 +200,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default StudentLayout;

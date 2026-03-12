@@ -2,13 +2,11 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import PageLoader from "../PageLoader/PageLoader";
 import Changepassword from "../Pages/Changepassword";
-import AdminDashboard from "../Adminpanel/AdminDashboard";
+
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import PublicRoute from "../PublicRoute/PublicRoute";
 import AdminLayout from "../Adminpanel/AdminLayout";
-import Departments from "../Adminpanel/Departments";
-import Complaints from "../Adminpanel/Complaints";
-import Users from "../Adminpanel/Users";
+import StudentLayout from "../Studentpanel/StudentLayout";
 
 // these are normal imports but now we use lazy imports.
 // import Home from "../Pages/Home";
@@ -21,6 +19,14 @@ const Home = lazy(() => import("../Pages/Home"));
 const Adminlogin = lazy(() => import("../Pages/Adminlogin"));
 const Studentlogin = lazy(() => import("../Pages/Studentlogin"));
 const Signup = lazy(() => import("../Pages/Signup"));
+//admin
+const AdminDashboard = lazy(() => import("../Adminpanel/AdminDashboard"));
+const Departments = lazy(() => import("../Adminpanel/Departments"));
+const Complaints = lazy(() => import("../Adminpanel/Complaints"));
+const Users = lazy(() => import("../Adminpanel/Users"));
+//students
+const StudentDashboard = lazy(() => import("../Studentpanel/StundentDashboard"));
+const StudentComplaints = lazy(() => import("../Studentpanel/StudentComplaints"));
 
 const AppRoutes = () => {
   return (
@@ -58,7 +64,8 @@ const AppRoutes = () => {
             </PublicRoute>
           }
         />
-        <Route path="change-password" element={<Changepassword />} />
+        <Route path="/change-password" element={<Changepassword />} />
+
         <Route
           path="/admin"
           element={
@@ -68,9 +75,21 @@ const AppRoutes = () => {
           }
         >
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="complaints" element={<Complaints/>} />
-          <Route path="departments" element={<Departments/>} />
-          <Route path="users" element={<Users/>} />
+          <Route path="complaints" element={<Complaints />} />
+          <Route path="departments" element={<Departments />} />
+          <Route path="users" element={<Users />} />
+        </Route>
+        {/* student nested Routes */}
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute role="student">
+              <StudentLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<StudentDashboard/>}/>
+          <Route path="complaints" element={<StudentComplaints/>}/>
         </Route>
       </Routes>
     </Suspense>
