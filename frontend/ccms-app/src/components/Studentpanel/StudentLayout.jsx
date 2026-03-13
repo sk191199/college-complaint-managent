@@ -20,6 +20,7 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import ReportIcon from "@mui/icons-material/Report";
 import LogoutIcon from "@mui/icons-material/Logout";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 
 const StudentLayout = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const StudentLayout = () => {
   // menu Items
   const menuItems = [
     { name: "Dashboard", path: "/student/dashboard" },
+    { name: "Raise Comaplint", path: "/student/raisecomplaint" },
     { name: "My Complaints", path: "/student/complaints" },
   ];
 
@@ -76,13 +78,19 @@ const StudentLayout = () => {
               onClick={() => navigate(menu.path)}
               sx={{
                 justifyContent: "flex-start",
-                bgcolor: "#6d5edb",
                 borderRadius: "12px",
                 p: 1.2,
                 color: "#fff",
                 textTransform: "none",
+                background:
+                  "linear-gradient(to right, #fcba03 20%, #6d5edb 50%)",
+                backgroundSize: "200% 100%",
+                backgroundPosition: "right bottom",
+                transition: "all 0.6s ease",
                 "&:hover": {
-                  bgcolor: "#fcba03",
+                  backgroundPosition: "left bottom",
+                  color: "black",
+                  fontWeight: "bold",
                 },
               }}
             >
@@ -161,20 +169,36 @@ const StudentLayout = () => {
 
         {/* MOBILE BOTTOM NAVBAR */}
         <Box sx={{ display: { xs: "block", md: "none" } }}>
-          <BottomNavigation showLabels>
+          <BottomNavigation
+            showLabels
+            sx={{
+              backgroundColor: "#0b045c",
+              borderTopLeftRadius: "12px",
+              borderTopRightRadius: "12px",
+            }}
+          >
             <BottomNavigationAction
               label="Home"
               icon={<HomeIcon />}
+              sx={{ color: "#fff" }}
               onClick={() => navigate("/student/dashboard")}
+            />
+            <BottomNavigationAction
+              label="Raise"
+              icon={<PostAddIcon />}
+              sx={{ color: "#fff" }}
+              onClick={() => navigate("/student/raisecomplaint")}
             />
             <BottomNavigationAction
               label="My Complaints"
               icon={<ReportIcon />}
+              sx={{ color: "#fff" }}
               onClick={() => navigate("/student/complaints")}
             />
             <BottomNavigationAction
               label="Logout"
               icon={<LogoutIcon />}
+              sx={{ color: "#fff" }}
               onClick={() => setOpenLogoutDialog(true)}
             />
           </BottomNavigation>
@@ -186,7 +210,9 @@ const StudentLayout = () => {
         >
           <DialogTitle>Confirm Logout</DialogTitle>
           <DialogContent>
-            <DialogContentText>Are you sure you want to logout?</DialogContentText>
+            <DialogContentText>
+              Are you sure you want to logout?
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenLogoutDialog(false)}>Cancel</Button>

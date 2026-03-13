@@ -7,6 +7,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import PublicRoute from "../PublicRoute/PublicRoute";
 import AdminLayout from "../Adminpanel/AdminLayout";
 import StudentLayout from "../Studentpanel/StudentLayout";
+import StudentRaiseComplaint from "../Studentpanel/StudentRaiseComplaint";
 
 // these are normal imports but now we use lazy imports.
 // import Home from "../Pages/Home";
@@ -90,6 +91,7 @@ const AppRoutes = () => {
         >
           <Route path="dashboard" element={<StudentDashboard/>}/>
           <Route path="complaints" element={<StudentComplaints/>}/>
+          <Route path="raisecomplaint" element={<StudentRaiseComplaint/>}/>
         </Route>
       </Routes>
     </Suspense>
