@@ -1,4 +1,3 @@
-const { where } = require("sequelize");
 const { connectToDatabase } = require("../config/db");
 const dotenv = require("dotenv");
 dotenv.config();
