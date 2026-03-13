@@ -15,4 +15,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage : storage});
 
-module.exports = upload
+module.exports = { upload }
+
+//upload give this req.file object like below
+// {
+//  fieldname: "image",
+//  originalname: "hostel.jpg",
+//  encoding: "7bit",
+//  mimetype: "image/jpeg",
+//  destination: "uploads/",
+//  filename: "1717891234-hostel.jpg",
+//  path: "uploads/1717891234-hostel.jpg",
+//  size: 234567
+// }
