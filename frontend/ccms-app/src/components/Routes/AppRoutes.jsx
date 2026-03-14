@@ -26,7 +26,7 @@ const Departments = lazy(() => import("../Adminpanel/Departments"));
 const Complaints = lazy(() => import("../Adminpanel/Complaints"));
 const Users = lazy(() => import("../Adminpanel/Users"));
 //students
-const StudentDashboard = lazy(() => import("../Studentpanel/StundentDashboard"));
+const StudentDashboard = lazy(() => import("../Studentpanel/StudentDashboard"));
 const StudentComplaints = lazy(() => import("../Studentpanel/StudentComplaints"));
 
 const AppRoutes = () => {
