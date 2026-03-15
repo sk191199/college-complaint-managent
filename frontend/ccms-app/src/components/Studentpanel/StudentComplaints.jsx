@@ -1,10 +1,12 @@
 import React from 'react'
+import {Box, TextField} from '@mui/material'
 
 const StudentComplaints = () => {
   return (
-    <div>
-      <h5>My Complaints</h5>
-    </div>
+    <Box>
+      <TextField type='file'/>
+
+    </Box>
   )
 }
 

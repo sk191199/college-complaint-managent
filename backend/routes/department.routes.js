@@ -6,7 +6,7 @@ const { addDepartment, getAllDepartments, deleteDepartment, updateDepartment} = 
 const { verifyToken, verifyAdmin } = require("../middleware/auth.middleware");
 
 routes.post("/addDepartment", verifyToken,verifyAdmin,  addDepartment);
-routes.get("/getAllDepartments", verifyToken,verifyAdmin, getAllDepartments)
+routes.get("/getAllDepartments", verifyToken, getAllDepartments)
 routes.delete("/deleteDepartment/:id", verifyToken, verifyAdmin,  deleteDepartment )
 routes.put("/updateDepartment/:id", verifyToken, verifyAdmin, updateDepartment)
 

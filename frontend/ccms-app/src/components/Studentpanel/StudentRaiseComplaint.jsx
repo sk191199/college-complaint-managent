@@ -1,11 +1,13 @@
 import React from 'react'
+import {Box, TextField} from '@mui/material'
 
-const StudentRaiseComplaint = () => {
+const StudentComplaints = () => {
   return (
-    <div>
-      <h4>StudentRaiseComplaint</h4>
-    </div>
+    <Box>
+      <TextField type='file'/>
+
+    </Box>
   )
 }
 
-export default StudentRaiseComplaint
+export default StudentComplaints
