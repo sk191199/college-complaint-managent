@@ -5,13 +5,13 @@ dotenv.config();
 //raise complaint || crete a complaint
 const raiseComplaint = async (req, res) => {
   try {
-    const { Complaint } = connectToDatabase();
+    const { Complaint } = await connectToDatabase();
     const { title, description, departmentId } = req.body;
     //  get user id from logged user using middleware verify token
     const userId = req.user.id;
     let imageName = null;
     if (req.file) {
-      imageName = req.file.fileName;
+      imageName = req.file.filename;
     }
 
     const complaint = await Complaint.create({

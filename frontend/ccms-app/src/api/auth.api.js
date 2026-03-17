@@ -39,3 +39,15 @@ export const deleteDepartment = (id) => {
 export const updateDepartment = (id, data) => {
     return api.put(`/user/updateDepartment/${id}`, data)
 }
+
+//raise complaint
+// export const raiseComplaint = (data) => {
+//     return api.post("/user/raiseComplaint", data)
+// }
+export const raiseComplaint = (data) => {
+  return api.post("/user/raiseComplaint", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
