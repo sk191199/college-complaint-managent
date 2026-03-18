@@ -51,3 +51,8 @@ export const raiseComplaint = (data) => {
     },
   });
 };
+
+//get all complaints
+export const getAllComplaints = () => {
+    return api.get("/user/complaints")
+}

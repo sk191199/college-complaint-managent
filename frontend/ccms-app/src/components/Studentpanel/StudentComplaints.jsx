@@ -1,10 +1,10 @@
 import React from 'react'
-import {Box, TextField} from '@mui/material'
+import {Box, TextField, Typography} from '@mui/material'
 
 const StudentComplaints = () => {
   return (
     <Box>
-      <TextField type='file'/>
+      <Typography variant="body1" color="initial">My Compalints</Typography>
 
     </Box>
   )
