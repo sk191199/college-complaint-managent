@@ -52,6 +52,11 @@ export const raiseComplaint = (data) => {
   });
 };
 
+//get all users
+export const getAllUsers = () => {
+    return api.get("/user/getallusers")
+}
+
 //get all complaints
 export const getAllComplaints = () => {
     return api.get("/user/complaints")

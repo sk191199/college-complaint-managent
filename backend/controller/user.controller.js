@@ -4,12 +4,13 @@ const { connectToDatabase } = require("../config/db");
 const SALT_ROUNDS = 10;
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const { where } = require("sequelize");
 dotenv.config();
 
 //create user
 const createUser = async (req, res) => {
-  const { User } = await connectToDatabase();
   try {
+    const { User } = await connectToDatabase();
     const { email, password, ...rest } = req.body;
     const existingUser = await User.findOne({
       where: { email },
@@ -42,8 +43,8 @@ const createUser = async (req, res) => {
 
 //login user function
 const loginUser = async (req, res) => {
-  const { User } = await connectToDatabase();
   try {
+    const { User } = await connectToDatabase();
     const { email, password } = req.body;
 
     // 1️⃣ Validate input
@@ -87,8 +88,8 @@ const loginUser = async (req, res) => {
 
 //get profile api
 const getProfile = async (req, res) => {
-  const { User } = await connectToDatabase();
   try {
+    const { User } = await connectToDatabase();
     console.log(req.user);
     const userId = req.user.id;
 
@@ -108,8 +109,8 @@ const getProfile = async (req, res) => {
 
 // verify email
 const verifyEmail = async (req, res) => {
-  const { User } = await connectToDatabase();
   try {
+    const { User } = await connectToDatabase();
     const { email } = req.body;
     if (!email) {
       return res
@@ -131,8 +132,8 @@ const verifyEmail = async (req, res) => {
 
 //change password
 const changePassword = async (req, res) => {
-  const { User } = await connectToDatabase();
   try {
+    const { User } = await connectToDatabase();
     const { email, newPassword } = req.body;
     if (!email || !newPassword) {
       return res
@@ -151,12 +152,10 @@ const changePassword = async (req, res) => {
     const isSamepassword = await bcrypt.compare(newPassword, user.password);
     // if newpassword is same as old password
     if (isSamepassword) {
-      return res
-        .status(400)
-        .json({
-          message: "New password cannot be same as old password",
-          field: "newPassword",
-        });
+      return res.status(400).json({
+        message: "New password cannot be same as old password",
+        field: "newPassword",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
@@ -168,6 +167,45 @@ const changePassword = async (req, res) => {
   }
 };
 
+// get all users
+const getAllUsers = async (req, res) => {
+  try {
+    const { User } = await connectToDatabase();
+    const users = await User.findAll({
+      where: {role: "student"},
+      attributes: ["id", "name", "email", "phone", "gender"],
+    });
+    return res.status(200).json({
+      message: "fetced users successfully",
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//delete user
+const deleteUser = async (req, res) => {
+  try {
+    const { User } = await connectToDatabase();
+    const { id } = req.params;
+
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await user.destroy();
+    return res
+      .status(200)
+      .json({ message: "user deleted successfluuy", success: true });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", success: false });
+  }
+};
 //exporting above functions using common js module. with object format
 module.exports = {
   createUser,
@@ -175,4 +213,6 @@ module.exports = {
   getProfile,
   verifyEmail,
   changePassword,
+  getAllUsers,
+  deleteUser,
 };
