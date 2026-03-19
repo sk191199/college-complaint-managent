@@ -2,7 +2,7 @@ const express = require("express")
 
 const routes = express.Router();
 
-const {createUser, loginUser, getProfile, verifyEmail, changePassword, getAllUsers, deleteUser} = require("../controller/user.controller");
+const {createUser, loginUser, getProfile, verifyEmail, changePassword, getAllUsers, deleteUser, totalUsers} = require("../controller/user.controller");
 const { verifyToken , verifyAdmin} = require("../middleware/auth.middleware")
 
 routes.post("/create-user", createUser)
@@ -13,6 +13,7 @@ routes.post("/verify-email", verifyEmail);
 routes.post("/change-password", changePassword);
 routes.get("/getprofile", verifyToken, getProfile )
 routes.get("/getallusers", verifyToken, verifyAdmin, getAllUsers);
-routes.delete("/deleteuser", verifyToken, verifyAdmin, deleteUser)
+routes.delete("/deleteuser/:id", verifyToken, verifyAdmin, deleteUser);
+routes.get("/totalusers", verifyToken, verifyAdmin, totalUsers);
 
 module.exports = routes

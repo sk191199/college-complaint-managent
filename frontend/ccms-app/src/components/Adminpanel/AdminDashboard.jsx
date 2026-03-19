@@ -6,6 +6,10 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PeopleIcon from "@mui/icons-material/People";
 import ApartmentIcon from "@mui/icons-material/Apartment";
+import { useState } from "react";
+import { useEffect } from "react";
+
+import { getTotalUsers, getTotalDepartments } from "../../api/auth.api";
 
 const cardStyle = {
   display: "flex",
@@ -24,21 +28,55 @@ const cardStyle = {
 };
 
 const AdminDashboard = () => {
+  const [totalUsers, setTotalUsers] = useState();
+  const [totalDepartments, setTotalDepartments] = useState();
+
+  // total users count
+  const totalUsersCount = async () => {
+    try {
+      const response = await getTotalUsers();
+      setTotalUsers(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // total departments count
+  const totalDepartmentsCount = async () => {
+    try {
+      const response = await getTotalDepartments();
+      setTotalDepartments(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    totalUsersCount();
+  }, []);
+
+  useEffect(() => {
+    totalDepartmentsCount();
+  }, []);
   return (
     <Box>
-
       {/* Dashboard Title */}
       <Typography variant="h5" fontWeight="bold" mb={3}>
         Admin Dashboard
       </Typography>
 
       <Grid container spacing={3}>
-
         {/* Total Complaints */}
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Box sx={{ ...cardStyle, background: "linear-gradient(45deg,#3b82f6,#60a5fa)" }}>
+          <Box
+            sx={{
+              ...cardStyle,
+              background: "linear-gradient(45deg,#3b82f6,#60a5fa)",
+            }}
+          >
             <Box>
-              <Typography variant="h4" fontWeight="bold">120</Typography>
+              <Typography variant="h4" fontWeight="bold">
+                120
+              </Typography>
               <Typography>Total Complaints</Typography>
             </Box>
             <ReportIcon sx={{ fontSize: 40 }} />
@@ -47,9 +85,16 @@ const AdminDashboard = () => {
 
         {/* Pending Complaints */}
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Box sx={{ ...cardStyle, background: "linear-gradient(45deg,#f59e0b,#fbbf24)" }}>
+          <Box
+            sx={{
+              ...cardStyle,
+              background: "linear-gradient(45deg,#f59e0b,#fbbf24)",
+            }}
+          >
             <Box>
-              <Typography variant="h4" fontWeight="bold">45</Typography>
+              <Typography variant="h4" fontWeight="bold">
+                45
+              </Typography>
               <Typography>Pending Complaints</Typography>
             </Box>
             <PendingActionsIcon sx={{ fontSize: 40 }} />
@@ -58,9 +103,16 @@ const AdminDashboard = () => {
 
         {/* Resolved */}
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <Box sx={{ ...cardStyle, background: "linear-gradient(45deg,#10b981,#34d399)" }}>
+          <Box
+            sx={{
+              ...cardStyle,
+              background: "linear-gradient(45deg,#10b981,#34d399)",
+            }}
+          >
             <Box>
-              <Typography variant="h4" fontWeight="bold">60</Typography>
+              <Typography variant="h4" fontWeight="bold">
+                60
+              </Typography>
               <Typography>Resolved</Typography>
             </Box>
             <CheckCircleIcon sx={{ fontSize: 40 }} />
@@ -69,9 +121,16 @@ const AdminDashboard = () => {
 
         {/* Total Users */}
         <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-          <Box sx={{ ...cardStyle, background: "linear-gradient(45deg,#6366f1,#8b5cf6)" }}>
+          <Box
+            sx={{
+              ...cardStyle,
+              background: "linear-gradient(45deg,#6366f1,#8b5cf6)",
+            }}
+          >
             <Box>
-              <Typography variant="h4" fontWeight="bold">300</Typography>
+              <Typography variant="h4" fontWeight="bold">
+                {totalUsers}
+              </Typography>
               <Typography>Total Students</Typography>
             </Box>
             <PeopleIcon sx={{ fontSize: 40 }} />
@@ -80,15 +139,21 @@ const AdminDashboard = () => {
 
         {/* Departments */}
         <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-          <Box sx={{ ...cardStyle, background: "linear-gradient(45deg,#ec4899,#f472b6)" }}>
+          <Box
+            sx={{
+              ...cardStyle,
+              background: "linear-gradient(45deg,#ec4899,#f472b6)",
+            }}
+          >
             <Box>
-              <Typography variant="h4" fontWeight="bold">10</Typography>
+              <Typography variant="h4" fontWeight="bold">
+                {totalDepartments}
+              </Typography>
               <Typography>Departments</Typography>
             </Box>
             <ApartmentIcon sx={{ fontSize: 40 }} />
           </Box>
         </Grid>
-
       </Grid>
 
       {/* Recent Complaints Section */}
@@ -103,7 +168,6 @@ const AdminDashboard = () => {
           </Typography>
         </Paper>
       </Box>
-
     </Box>
   );
 };

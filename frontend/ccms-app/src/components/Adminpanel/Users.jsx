@@ -10,13 +10,41 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Alert,
+  Snackbar
 } from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { getAllUsers } from "../../api/auth.api";
+import { getAllUsers, deleteUser } from "../../api/auth.api";
+
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleDelete = (id) => {
+    setSelectedUserId(id);
+    setOpenDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteUser(selectedUserId);
+      setOpenDialog(false);
+      setOpenSnackbar(true)
+      await fetchUsers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const fetchUsers = async () => {
     try {
       const response = await getAllUsers();
@@ -29,6 +57,7 @@ const Users = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
   return (
     <Box display="" mx="" my="" sx="">
       <Typography variant="h5" color="initial">
@@ -58,7 +87,10 @@ const Users = () => {
                     <TableCell>{user.phone}</TableCell>
                     <TableCell>{user.gender}</TableCell>
                     <TableCell align="center">
-                      <IconButton color="error">
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(user.id)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -75,6 +107,34 @@ const Users = () => {
           </Table>
         </TableContainer>
       </Box>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this user?
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleConfirmDelete}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert severity="success" variant="filled">
+          User deleted successfully
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

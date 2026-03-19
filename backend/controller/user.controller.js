@@ -172,7 +172,7 @@ const getAllUsers = async (req, res) => {
   try {
     const { User } = await connectToDatabase();
     const users = await User.findAll({
-      where: {role: "student"},
+      where: { role: "student" },
       attributes: ["id", "name", "email", "phone", "gender"],
     });
     return res.status(200).json({
@@ -206,6 +206,23 @@ const deleteUser = async (req, res) => {
       .json({ message: "Internal Server Error", success: false });
   }
 };
+
+// total users
+const totalUsers = async (req, res) => {
+  try {
+    const { User } = await connectToDatabase();
+    const totalusers = await User.count({ where: { role: "student" } });
+    return res
+      .status(200)
+      .json({ message: "total users count", success: true, data: totalusers });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 //exporting above functions using common js module. with object format
 module.exports = {
   createUser,
@@ -215,4 +232,5 @@ module.exports = {
   changePassword,
   getAllUsers,
   deleteUser,
+  totalUsers,
 };

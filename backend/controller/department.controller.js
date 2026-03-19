@@ -1,3 +1,4 @@
+const { json } = require("body-parser");
 const { connectToDatabase } = require("../config/db");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -98,9 +99,33 @@ const updateDepartment = async (req, res) => {
   }
 };
 
+// total department count
+const totalDepartmentCount = async (req, res) => {
+  try {
+    const { Department } = await connectToDatabase();
+
+    const totalDepartments = await Department.count();
+
+    return res
+      .status(200)
+      .json({
+        message: "total departments",
+        data: totalDepartments,
+        success: true,
+      });
+  } catch (error) {
+    console.log(error);
+    return (
+      res.status(500),
+      json({ message: "Internal Server Error", success: false })
+    );
+  }
+};
+
 module.exports = {
   addDepartment,
   getAllDepartments,
   deleteDepartment,
   updateDepartment,
+  totalDepartmentCount,
 };
