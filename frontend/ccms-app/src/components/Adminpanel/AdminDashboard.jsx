@@ -9,7 +9,7 @@ import ApartmentIcon from "@mui/icons-material/Apartment";
 import { useState } from "react";
 import { useEffect } from "react";
 
-import { getTotalUsers, getTotalDepartments } from "../../api/auth.api";
+import { getTotalUsers, getTotalDepartments, getComplaintCounts } from "../../api/auth.api";
 
 const cardStyle = {
   display: "flex",
@@ -28,8 +28,11 @@ const cardStyle = {
 };
 
 const AdminDashboard = () => {
-  const [totalUsers, setTotalUsers] = useState();
-  const [totalDepartments, setTotalDepartments] = useState();
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalDepartments, setTotalDepartments] = useState(0);
+  const [totalComplaints, setTotalComplaints] = useState(0)
+  const [totalPendingComplaints, setTotalPendingComplaints] = useState(0);
+  const [totalResolvedComplaints, setTotalResolvedComplaints] = useState(0)
 
   // total users count
   const totalUsersCount = async () => {
@@ -40,6 +43,19 @@ const AdminDashboard = () => {
       console.log(error);
     }
   };
+
+  // total complaints count
+  const totalComplaintsCount = async () => {
+    try {
+      const response = await getComplaintCounts()
+      setTotalComplaints(response.data.totalCount)
+      setTotalPendingComplaints(response.data.totalPendingCount)
+      setTotalResolvedComplaints(response.data.totalResolveCount)
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // total departments count
   const totalDepartmentsCount = async () => {
@@ -57,6 +73,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     totalDepartmentsCount();
   }, []);
+
+  useEffect(() => {
+    totalComplaintsCount();
+  }, [])
   return (
     <Box>
       {/* Dashboard Title */}
@@ -75,7 +95,7 @@ const AdminDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                120
+                {totalComplaints}
               </Typography>
               <Typography>Total Complaints</Typography>
             </Box>
@@ -93,7 +113,7 @@ const AdminDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                45
+                {totalPendingComplaints}
               </Typography>
               <Typography>Pending Complaints</Typography>
             </Box>
@@ -111,7 +131,7 @@ const AdminDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                60
+                {totalResolvedComplaints}
               </Typography>
               <Typography>Resolved</Typography>
             </Box>

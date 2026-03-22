@@ -63,8 +63,8 @@ export const deleteUser = (id) => {
 }
 
 //get all complaints
-export const getAllComplaints = () => {
-    return api.get("/user/complaints")
+export const getAllComplaints = (page = 1, limit = 10, status = "") => {
+    return api.get(`/user/complaints?page=${page}&limit=${limit}&status=${status}`);
 }
 
 //get total users count
@@ -75,4 +75,9 @@ export const getTotalUsers = () => {
 //get total departments count
 export const getTotalDepartments = () => {
     return api.get("/user/totaldepartments")
+}
+
+// get complaint counts
+export const getComplaintCounts = () => {
+    return api.get("/user/complaintcounts")
 }
