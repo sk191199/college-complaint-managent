@@ -180,4 +180,61 @@ const updateComplaintStatus = async (req, res) => {
   }
 };
 
-module.exports = { raiseComplaint, getAllComplaints, updateComplaintStatus, getComplaintCount};
+// get complaints by user
+const getAllComplaintsByUser = async (req, res) => {
+  try {
+    const { Complaint } = await connectToDatabase();
+    const userId = req.user.id;
+    const complaints = await Complaint.findAll({
+      where: { user_id: userId },
+    });
+    return res
+      .status(200)
+      .json({ message: "fetched complaints successfully", data: complaints });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+// count complaints by user
+const getComplaintCountByUser = async (req, res) => {
+  try {
+    const { Complaint } = await connectToDatabase();
+    const userId = req.user.id;
+    //total complaints
+    const totalComplaints = await Complaint.count({
+      where: { user_id: userId },
+    });
+    //pending complaints
+    const pendingComplaints = await Complaint.count({
+      where: { user_id: userId, status: "pending" },
+    });
+    // resolve complaints
+    const resolvedComplaints = await Complaint.count({
+      where: { user_id: userId, status: "resolved" },
+    });
+    // rejected complaints
+    const rejectedComplaints = await Complaint.count({
+      where: { user_id: userId, status: "rejected" },
+    });
+
+    return res.status(200).json({
+      message: "complaints count",
+      totalComplaints,
+      pendingComplaints,
+      resolvedComplaints,
+      rejectedComplaints,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+module.exports = {
+  raiseComplaint,
+  getAllComplaints,
+  updateComplaintStatus,
+  getComplaintCount,
+  getAllComplaintsByUser,
+  getComplaintCountByUser,
+};

@@ -17,6 +17,7 @@ import {
   TableBody,
   Chip,
   Button,
+  TablePagination,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -35,7 +36,9 @@ const Complaints = () => {
   // page
   const [page, setPage] = useState(0);
   // roes per page
-  const [rowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  // total rows
+  const [totalRows, setTotalRows] = useState(0);
   // status filter
   const [statusFilter, setStatusFilter] = useState("all");
   // status map for each complaint
@@ -66,7 +69,10 @@ const Complaints = () => {
       console.log("data", data);
       //store complaints
       setComplaints(data);
+      // set filter complaints
       setFiltered(data);
+      // set total rows
+      setTotalRows(response.data.total);
 
       const map = {};
 
@@ -105,14 +111,25 @@ const Complaints = () => {
   const handleStatusChange = (id, value) => {
     setStatusMap((prev) => ({
       ...prev,
-      [id] : value
-    }))
-  }
+      [id]: value,
+    }));
+  };
 
   //handleUpdate
   const handleUpdate = (id) => {
-    console.log(id)
-  }
+    console.log(id);
+  };
+
+  // page handlers
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+
+    // reset to first page
+    setPage(0);
+  };
 
   return (
     <Box sx={{ p: 1, background: "#F4F6F8", minHeight: "100vh" }}>
@@ -219,28 +236,54 @@ const Complaints = () => {
                 <TableCell>{item.user.name}</TableCell>
                 <TableCell>{item.department.department_name}</TableCell>
                 <TableCell>{statusMap[item.complaint_id]}</TableCell>
-                <TableCell>{new Date(item.created_at).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {new Date(item.created_at).toLocaleDateString()}
+                </TableCell>
                 {/* status menus with update button */}
                 <TableCell>
                   <Box display="flex" gap={1}>
-                    <Select size="small" value={statusMap[item.complaint_id]} onChange={(e) => handleStatusChange(item.complaint_id, e.target.value)}>
+                    <Select
+                      size="small"
+                      value={statusMap[item.complaint_id]}
+                      onChange={(e) =>
+                        handleStatusChange(item.complaint_id, e.target.value)
+                      }
+                    >
                       <MenuItem value="pending">Pending</MenuItem>
-                      <MenuItem  value="in-progress">In-Progress</MenuItem>
+                      <MenuItem value="in-progress">In-Progress</MenuItem>
                       <MenuItem value="resolved">Resolved</MenuItem>
-                      <MenuItem value="rejected" >Rejected</MenuItem>
+                      <MenuItem value="rejected">Rejected</MenuItem>
                     </Select>
-                    <Button size="small" variant="contained" onClick={handleUpdate(item.complaint_id)}>Update</Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={handleUpdate(item.complaint_id)}
+                    >
+                      Update
+                    </Button>
                   </Box>
                 </TableCell>
                 {/* // view button */}
                 <TableCell>
-                  <Button startIcon={<VisibilityIcon/>} variant="outlined">View</Button>
+                  <Button startIcon={<VisibilityIcon />} variant="outlined">
+                    View
+                  </Button>
                 </TableCell>
               </TableRow>
-              
             ))}
           </TableBody>
         </Table>
+
+        {/* ====== pagination ==== */}
+        <TablePagination
+          component="div"
+          count={totalRows}
+          page={page}
+          onPageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          onRrowsPerPageOptions={[10, 25, 50]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        ></TablePagination>
       </TableContainer>
     </Box>
   );

@@ -67,6 +67,11 @@ export const getAllComplaints = (page = 1, limit = 10, status = "") => {
     return api.get(`/user/complaints?page=${page}&limit=${limit}&status=${status}`);
 }
 
+// get all complaints by user
+export const getAllComplaintsByUser = () => {
+    return api.get("user/usercomplaints")
+}
+
 //get total users count
 export const getTotalUsers = () => {
     return api.get("/user/totalusers")
@@ -80,4 +85,9 @@ export const getTotalDepartments = () => {
 // get complaint counts
 export const getComplaintCounts = () => {
     return api.get("/user/complaintcounts")
+}
+
+//get complaint count by user
+export const getComplaintCountByUser = () => {
+    return api.get("/user/complaintscountbyuser")
 }

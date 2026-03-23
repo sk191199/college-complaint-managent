@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Grid, Typography, Button } from "@mui/material";
 
@@ -7,6 +7,12 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+
+// import functions
+import {
+  getAllComplaintsByUser,
+  getComplaintCountByUser,
+} from "../../api/auth.api";
 
 const cardStyle = {
   display: "flex",
@@ -27,6 +33,41 @@ const cardStyle = {
 const StudentDashboard = () => {
   const Navigate = useNavigate();
 
+  const [totalComplaints, setTotalComplaints] = useState(0);
+  const [pendingComplaints, setPendingComplaints] = useState(0);
+  const [resolvedComplaints, setresolvedComplaints] = useState(0);
+  const [rejectedComplaints, setRejectedComplaints] = useState(0);
+
+  //fetch complaints user
+  const fetchComplaints = async () => {
+    try {
+      const response = await getAllComplaintsByUser();
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // fetch complaints counts
+  const fetchCounts = async () => {
+    try {
+      const response = await getComplaintCountByUser();
+
+      setTotalComplaints(response.data.totalComplaints);
+      setPendingComplaints(response.data.pendingComplaints);
+      setresolvedComplaints(response.data.resolvedComplaints);
+      setRejectedComplaints(response.data.rejectedComplaints);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchComplaints();
+  }, []);
+
+  useEffect(() => {
+    fetchCounts();
+  }, []);
+
   //handleComplaintBtn logic
   const handleComplaintBtn = () => {
     Navigate("/student/raisecomplaint");
@@ -44,7 +85,7 @@ const StudentDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                20
+                {totalComplaints}
               </Typography>
               <Typography variant="body1">Total Complaints</Typography>
             </Box>
@@ -62,7 +103,7 @@ const StudentDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                10
+                {pendingComplaints}
               </Typography>
               <Typography variant="body1">Pending</Typography>
             </Box>
@@ -80,7 +121,7 @@ const StudentDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                5
+                {resolvedComplaints}
               </Typography>
               <Typography variant="body1">Resolved</Typography>
             </Box>
@@ -98,7 +139,7 @@ const StudentDashboard = () => {
           >
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                5
+                {rejectedComplaints}
               </Typography>
               <Typography variant="body1">Rejected</Typography>
             </Box>
