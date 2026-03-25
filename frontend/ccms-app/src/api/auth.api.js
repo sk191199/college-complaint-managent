@@ -66,7 +66,10 @@ export const deleteUser = (id) => {
 export const getAllComplaints = (page = 1, limit = 10, status = "") => {
     return api.get(`/user/complaints?page=${page}&limit=${limit}&status=${status}`);
 }
-
+//put update complaint
+export const updateComplaint = (id, status) => {
+    return api.put(`user/complaint/${id}`, {status})
+}
 // get all complaints by user
 export const getAllComplaintsByUser = () => {
     return api.get("user/usercomplaints")

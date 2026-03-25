@@ -135,11 +135,11 @@ const getComplaintCount = async (req, res) => {
     });
     // total resolve count
     const totalResolveCount = await Complaint.count({
-      where: { status: "resolve" },
+      where: { status: "resolved" },
     });
     // total in-progress count
     const totalInProgressCount = await Complaint.count({
-      where: { status: "in-progres" },
+      where: { status: "in-progress" },
     });
 
     return res.status(200).json({
@@ -169,6 +169,10 @@ const updateComplaintStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid status value" });
     }
     const complaint = await Complaint.findByPk(id);
+
+    if(!complaint){
+      return res.status(400).json({message : "complaint not found"})
+    }
 
     //update status
     await complaint.update({ status: status });
@@ -209,6 +213,10 @@ const getComplaintCountByUser = async (req, res) => {
     const pendingComplaints = await Complaint.count({
       where: { user_id: userId, status: "pending" },
     });
+    //In-Progress
+    const inprogressComplaints = await Complaint.count({
+      where : {user_id : userId, status : "in-progress"}
+    })
     // resolve complaints
     const resolvedComplaints = await Complaint.count({
       where: { user_id: userId, status: "resolved" },
@@ -222,6 +230,7 @@ const getComplaintCountByUser = async (req, res) => {
       message: "complaints count",
       totalComplaints,
       pendingComplaints,
+      inprogressComplaints,
       resolvedComplaints,
       rejectedComplaints,
     });
