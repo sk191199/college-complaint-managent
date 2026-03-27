@@ -170,8 +170,8 @@ const updateComplaintStatus = async (req, res) => {
     }
     const complaint = await Complaint.findByPk(id);
 
-    if(!complaint){
-      return res.status(400).json({message : "complaint not found"})
+    if (!complaint) {
+      return res.status(400).json({ message: "complaint not found" });
     }
 
     //update status
@@ -187,10 +187,17 @@ const updateComplaintStatus = async (req, res) => {
 // get complaints by user
 const getAllComplaintsByUser = async (req, res) => {
   try {
-    const { Complaint } = await connectToDatabase();
+    const { Complaint, Department } = await connectToDatabase();
     const userId = req.user.id;
     const complaints = await Complaint.findAll({
       where: { user_id: userId },
+      include: [
+        {
+          model: Department,
+          as: "department",
+          attributes: ["id", "department_name"],
+        },
+      ],
     });
     return res
       .status(200)
@@ -215,8 +222,8 @@ const getComplaintCountByUser = async (req, res) => {
     });
     //In-Progress
     const inprogressComplaints = await Complaint.count({
-      where : {user_id : userId, status : "in-progress"}
-    })
+      where: { user_id: userId, status: "in-progress" },
+    });
     // resolve complaints
     const resolvedComplaints = await Complaint.count({
       where: { user_id: userId, status: "resolved" },
