@@ -179,14 +179,10 @@ const AdminDashboard = () => {
       {/* Recent Complaints Section */}
       <Box mt={5}>
         <Typography variant="h6" mb={2} fontWeight="bold">
-          Recent Complaints
+          Complaints Analytics
         </Typography>
 
-        <Paper sx={{ p: 3, borderRadius: 3 }}>
-          <Typography color="text.secondary">
-            Recent complaints table will appear here.
-          </Typography>
-        </Paper>
+        
       </Box>
     </Box>
   );

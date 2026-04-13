@@ -38,6 +38,7 @@ const StudentComplaints = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+  const [totalRows,setTotalRows] = useState(0)
 
   // fetch complaints
   const fetchMyComplaints = async () => {
@@ -47,10 +48,12 @@ const StudentComplaints = () => {
         rowsPerPage,
         statusFilter === "all" ? "" : statusFilter,
       );
-      const data = response.data.data;
+      const data = response.data.data.rows;
+      console.log("response", response)
       console.log("res", data);
       setMyComplaints(data);
       setFilterComplaints(data)
+      setTotalRows(response.data.total)
 
       const map = {};
 
@@ -92,6 +95,16 @@ const StudentComplaints = () => {
 
     return "default";
   };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+
+    setPage(0)
+  }
 
   return (
     <Box sx={{ p: 1 }}>
@@ -181,6 +194,19 @@ const StudentComplaints = () => {
             ))}
           </TableBody>
         </Table>
+        <TablePagination
+        component="div"
+        count={totalRows}
+        page={page}
+        onPageChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[10, 25, 50]}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+
+        >
+
+        </TablePagination>
+        
       </TableContainer>
 
       {/* dialog  */}

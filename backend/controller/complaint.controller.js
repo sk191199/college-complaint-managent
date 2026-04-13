@@ -1,5 +1,5 @@
 const { Model, where } = require("sequelize");
-const { connectToDatabase } = require("../config/db");
+const { connectToDatabase, sequelize } = require("../config/db");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -136,7 +136,7 @@ const getAllComplaintsByUser = async (req, res) => {
       whereCondition.status = status;
     }
 
-    const complaints = await Complaint.findAll({
+    const complaints = await Complaint.findAndCountAll({
       where: whereCondition,
       include: [
         {
@@ -152,9 +152,13 @@ const getAllComplaintsByUser = async (req, res) => {
 
       distinct: true,
     });
-    return res
-      .status(200)
-      .json({ message: "fetched complaints successfully", data: complaints });
+    return res.status(200).json({
+      message: "fetched complaints successfully",
+      data: complaints,
+      total: complaints.count,
+      page: page,
+      totalPages: Math.ceil(complaints.count / limit),
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -267,6 +271,30 @@ const getComplaintCountByUser = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// // complaints count by department wise
+// const getDepartmentWiseComplaintsCount = async (req, res) => {
+//   try {
+//     const { Complaint, Department } = await connectToDatabase();
+
+//     const data = await Complaint.findAll({
+//       attributes: [
+//         [sequelize.col("department.department_name"), "department"],
+//         [sequelize.fn("COUNT", sequelize.col("complaint_id")), "count"],
+//       ],
+//       include : [
+//         {
+//           model : Department,
+//           as : "department",
+//           attributes :[]
+//         }
+//       ]
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 module.exports = {
   raiseComplaint,
   getAllComplaints,
