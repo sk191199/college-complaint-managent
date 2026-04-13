@@ -16,25 +16,41 @@ import {
   DialogTitle,
   DialogActions,
   Chip,
+  Grid,
+  TextField,
+  MenuItem,
+  Select,
+  InputAdornment,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import SearchIcon from "@mui/icons-material/Search";
 // import DeleteIcon from "@mui/icons-material/Delete";
 
 import { getAllComplaintsByUser } from "../../api/auth.api";
 
 const StudentComplaints = () => {
   const [myComplaints, setMyComplaints] = useState([]);
+  const [filterComplaints, setFilterComplaints] = useState([])
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [statusMap, setStatusMap] = useState([]);
   const [open, setOpen] = useState(false);
+  const [searchTitle, setSearchTitle] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
 
   // fetch complaints
   const fetchMyComplaints = async () => {
     try {
-      const response = await getAllComplaintsByUser();
+      const response = await getAllComplaintsByUser(
+        page + 1,
+        rowsPerPage,
+        statusFilter === "all" ? "" : statusFilter,
+      );
       const data = response.data.data;
       console.log("res", data);
       setMyComplaints(data);
+      setFilterComplaints(data)
 
       const map = {};
 
@@ -50,7 +66,23 @@ const StudentComplaints = () => {
 
   useEffect(() => {
     fetchMyComplaints();
-  }, []);
+  }, [statusFilter, rowsPerPage, page]);
+
+  //clinet side searach filter 
+  useEffect(() => {
+    let data = myComplaints;
+    if(searchTitle){
+      data = data.filter((c) => 
+        c.title.toLowerCase().includes(searchTitle.toLowerCase())
+      )
+    }
+    if (statusFilter !== "all") {
+      data = data.filter(
+        (c) => c.status.toLowerCase() === statusFilter.toLowerCase(),
+      );
+    }
+    setFilterComplaints(data);
+  }, [searchTitle, statusFilter, myComplaints])
 
   const getStatusColor = (status) => {
     if (status === "pending") return "warning";
@@ -67,6 +99,40 @@ const StudentComplaints = () => {
         My Compalints
       </Typography>
       {/* ===== table ===== */}
+      <Grid container spacing={1} mt={2}>
+        <Grid size={{ xs: 6, md: 4 }}>
+          <TextField
+            placeholder="Search Compliant"
+            fullWidth
+            value={searchTitle}
+            onChange={(e) => {
+              setSearchTitle(e.target.value);
+            }}
+            InputProps={{
+              startAdornment:(
+                <InputAdornment>
+                  <SearchIcon/>
+                </InputAdornment>
+              )
+            }}
+          />
+        </Grid>
+        <Grid size={{ xs: 6, md: 4 }}>
+          <Select
+            fullWidth
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+            }}
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="pending">Pending</MenuItem>
+            <MenuItem value="in-progress">In-Progress</MenuItem>
+            <MenuItem value="resolved">Resolved</MenuItem>
+            <MenuItem value="rejected">Rejected</MenuItem>
+          </Select>
+        </Grid>
+      </Grid>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>
           <TableHead sx={{ backgroundColor: "#f1f1f1" }}>
@@ -81,7 +147,7 @@ const StudentComplaints = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {myComplaints.map((item) => (
+            {filterComplaints.map((item) => (
               <TableRow key={item.complaint_id}>
                 <TableCell>
                   <Chip label={`# ${item.complaint_id}`} size="small" />

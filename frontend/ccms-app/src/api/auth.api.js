@@ -71,8 +71,8 @@ export const updateComplaint = (id, status) => {
     return api.put(`user/complaint/${id}`, {status})
 }
 // get all complaints by user
-export const getAllComplaintsByUser = () => {
-    return api.get("user/usercomplaints")
+export const getAllComplaintsByUser = (page = 1, limit=10, status = "") => {
+    return api.get(`user/usercomplaints?page=${page}&limit=${limit}&status=${status}`)
 }
 
 //get total users count

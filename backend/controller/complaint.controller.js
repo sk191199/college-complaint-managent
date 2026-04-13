@@ -117,6 +117,50 @@ const getAllComplaints = async (req, res) => {
   }
 };
 
+// get complaints by user
+const getAllComplaintsByUser = async (req, res) => {
+  try {
+    const { Complaint, Department } = await connectToDatabase();
+    const userId = req.user.id;
+
+    //query params
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const status = req.query.status || "";
+
+    //offset cal
+    const offset = (page - 1) * limit;
+
+    let whereCondition = { user_id: userId };
+    if (status) {
+      whereCondition.status = status;
+    }
+
+    const complaints = await Complaint.findAll({
+      where: whereCondition,
+      include: [
+        {
+          model: Department,
+          as: "department",
+          attributes: ["id", "department_name"],
+        },
+      ],
+
+      order: [["created_at", "DESC"]],
+      limit: limit,
+      offset: offset,
+
+      distinct: true,
+    });
+    return res
+      .status(200)
+      .json({ message: "fetched complaints successfully", data: complaints });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // get status count
 const getComplaintCount = async (req, res) => {
   try {
@@ -184,29 +228,6 @@ const updateComplaintStatus = async (req, res) => {
   }
 };
 
-// get complaints by user
-const getAllComplaintsByUser = async (req, res) => {
-  try {
-    const { Complaint, Department } = await connectToDatabase();
-    const userId = req.user.id;
-    const complaints = await Complaint.findAll({
-      where: { user_id: userId },
-      include: [
-        {
-          model: Department,
-          as: "department",
-          attributes: ["id", "department_name"],
-        },
-      ],
-    });
-    return res
-      .status(200)
-      .json({ message: "fetched complaints successfully", data: complaints });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
 // count complaints by user
 const getComplaintCountByUser = async (req, res) => {
   try {
