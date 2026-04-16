@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography, Paper } from "@mui/material";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 import ReportIcon from "@mui/icons-material/Report";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import PeopleIcon from "@mui/icons-material/People";
 import ApartmentIcon from "@mui/icons-material/Apartment";
-import { useState } from "react";
-import { useEffect } from "react";
 
-import { getTotalUsers, getTotalDepartments, getComplaintCounts } from "../../api/auth.api";
+import {
+  getTotalUsers,
+  getTotalDepartments,
+  getComplaintCounts,
+  getDepartmentWiseCompplaintCount,
+} from "../../api/auth.api";
 
 const cardStyle = {
   display: "flex",
@@ -30,9 +43,11 @@ const cardStyle = {
 const AdminDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalDepartments, setTotalDepartments] = useState(0);
-  const [totalComplaints, setTotalComplaints] = useState(0)
+  const [totalComplaints, setTotalComplaints] = useState(0);
   const [totalPendingComplaints, setTotalPendingComplaints] = useState(0);
-  const [totalResolvedComplaints, setTotalResolvedComplaints] = useState(0)
+  const [totalResolvedComplaints, setTotalResolvedComplaints] = useState(0);
+
+  const [data, setData] = useState([]);
 
   // total users count
   const totalUsersCount = async () => {
@@ -47,21 +62,36 @@ const AdminDashboard = () => {
   // total complaints count
   const totalComplaintsCount = async () => {
     try {
-      const response = await getComplaintCounts()
-      setTotalComplaints(response.data.totalCount)
-      setTotalPendingComplaints(response.data.totalPendingCount)
-      setTotalResolvedComplaints(response.data.totalResolveCount)
-      
+      const response = await getComplaintCounts();
+      setTotalComplaints(response.data.totalCount);
+      setTotalPendingComplaints(response.data.totalPendingCount);
+      setTotalResolvedComplaints(response.data.totalResolveCount);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   // total departments count
   const totalDepartmentsCount = async () => {
     try {
       const response = await getTotalDepartments();
       setTotalDepartments(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // get departmentwise complaint count
+  const departmentWiseComplaintCount = async () => {
+    try {
+      const res = await getDepartmentWiseCompplaintCount();
+      const formatted = res.data.map((item) => ({
+        department: item.department,
+        count: Number(item.count),
+      }));
+
+      setData(formatted);
+      console.log("res-data", formatted);
     } catch (error) {
       console.log(error);
     }
@@ -76,14 +106,18 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     totalComplaintsCount();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    departmentWiseComplaintCount();
+  }, []);
   return (
     <Box>
       {/* Dashboard Title */}
       <Typography variant="h5" fontWeight="bold" mb={3}>
         Admin Dashboard
       </Typography>
-
+      {/* compaints counts conatiner */}
       <Grid container spacing={3}>
         {/* Total Complaints */}
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
@@ -176,13 +210,27 @@ const AdminDashboard = () => {
         </Grid>
       </Grid>
 
-      {/* Recent Complaints Section */}
-      <Box mt={5}>
+      {/* Complaints Analaytics Section */}
+      <Box mt={5} sx={{width:"100%"}}>
         <Typography variant="h6" mb={2} fontWeight="bold">
           Complaints Analytics
         </Typography>
-
-        
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 1 }}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  {/*  Department Names on X-axis */}
+                  <XAxis dataKey="department" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </Paper>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

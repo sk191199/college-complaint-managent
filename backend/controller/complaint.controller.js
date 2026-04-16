@@ -272,29 +272,38 @@ const getComplaintCountByUser = async (req, res) => {
   }
 };
 
-// // complaints count by department wise
-// const getDepartmentWiseComplaintsCount = async (req, res) => {
-//   try {
-//     const { Complaint, Department } = await connectToDatabase();
+// complaints count by department wise (INCLUDING 0 complaints)
+const getDepartmentWiseComplaintsCount = async (req, res) => {
+  try {
+    const { Complaint, Department, sequelize } = await connectToDatabase();
 
-//     const data = await Complaint.findAll({
-//       attributes: [
-//         [sequelize.col("department.department_name"), "department"],
-//         [sequelize.fn("COUNT", sequelize.col("complaint_id")), "count"],
-//       ],
-//       include : [
-//         {
-//           model : Department,
-//           as : "department",
-//           attributes :[]
-//         }
-//       ]
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
+    const data = await Department.findAll({
+      attributes: [
+        ["department_name", "department"],
+        [
+          sequelize.fn("COUNT", sequelize.col("complaints.complaint_id")),
+          "count",
+        ],
+      ],
+      include: [
+        {
+          model: Complaint,
+          as: "complaints",
+          attributes: [],
+          required: false, // LEFT JOIN → includes 0
+        },
+      ],
+      group: ["departments.id"],
+      order: [["department_name", "ASC"]],
+      raw: true,
+    });
+
+    return res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 module.exports = {
   raiseComplaint,
   getAllComplaints,
@@ -302,4 +311,5 @@ module.exports = {
   getComplaintCount,
   getAllComplaintsByUser,
   getComplaintCountByUser,
+  getDepartmentWiseComplaintsCount,
 };

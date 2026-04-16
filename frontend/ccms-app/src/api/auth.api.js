@@ -94,3 +94,8 @@ export const getComplaintCounts = () => {
 export const getComplaintCountByUser = () => {
     return api.get("/user/complaintscountbyuser")
 }
+
+// get department wise complaint count for graph
+export const getDepartmentWiseCompplaintCount = () => {
+    return api.get("/user/departmentwisecomplaints")
+}
