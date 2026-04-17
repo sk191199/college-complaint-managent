@@ -9,6 +9,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Cell,
+  PieChart,
+  Pie,
+  Legend,
 } from "recharts";
 
 import ReportIcon from "@mui/icons-material/Report";
@@ -39,6 +43,16 @@ const cardStyle = {
     boxShadow: "0 12px 25px rgba(0,0,0,0.3)",
   },
 };
+
+const COLORS = [
+  "#3b82f6", // blue
+  "#10b981", // green
+  "#f59e0b", // yellow
+  "#ef4444", // red
+  "#8b5cf6", // purple
+  "#ec4899", // pink
+  "#14b8a6", // teal
+];
 
 const AdminDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
@@ -211,22 +225,83 @@ const AdminDashboard = () => {
       </Grid>
 
       {/* Complaints Analaytics Section */}
-      <Box mt={5} sx={{width:"100%"}}>
+      <Box mt={5} sx={{ width: "100%" }}>
         <Typography variant="h6" mb={2} fontWeight="bold">
           Complaints Analytics
         </Typography>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Paper sx={{ p: 1 }}>
+          <Grid item size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 2, overflow: "hidden" }}>
+              <Typography variant="subtitle1" fontWeight="bold" mb={2}>
+                Department Wise Complaints
+              </Typography>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
                   {/*  Department Names on X-axis */}
-                  <XAxis dataKey="department" />
-                  <YAxis />
+                  <XAxis
+                    dataKey="department"
+                    label={{
+                      value: "Departments",
+                      position: "insideBottom",
+                      offset: -5,
+                    }}
+                  />
+                  <YAxis
+                    label={{
+                      value: "Count",
+                      angle: 90,
+                      position: "insideLeft",
+                    }}
+                  />
                   <Tooltip />
-                  <Bar dataKey="count" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+                  <Bar
+                    dataKey="count"
+                    fill="#3b82f6"
+                    radius={[10, 10, 0, 0]}
+                    label
+                  >
+                    {data.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Bar>
                 </BarChart>
+              </ResponsiveContainer>
+            </Paper>
+          </Grid>
+          {/* ===== pie chart ====== */}
+          <Grid item size={{ xs: 12, md: 6 }}>
+            <Paper sx={{ p: 2, overflow: "hidden" }}>
+              <Typography variant="subtitle1" fontWeight="bold" mb={2}>
+                Department Wise Complaints
+              </Typography>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={data}
+                    dataKey="count"
+                    nameKey="department"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    paddingAngle={3}
+                    label
+                  >
+                    {data.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(val) => `${val} complaints`} />
+
+                  <Legend
+                    layout="horizontal"
+                    verticalAlign="bottom"
+                    align="center"
+                  />
+                </PieChart>
               </ResponsiveContainer>
             </Paper>
           </Grid>
